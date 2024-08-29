@@ -6,6 +6,7 @@ A mobile platform that connects users with recycling centers to promote sustaina
 
 - [Introduction](#introduction)
 - [Tech Stack](#tech-stack)
+- [Installation](#installation)
 - [License](#license)
 - [Contact](#contact)
 
@@ -22,6 +23,18 @@ The Waste-to-Wealth platform is designed to tackle the waste management crisis b
 - **Backend:** Firebase (Firestore, Authentication)
 - **APIs:** Google Maps API (for geolocation)
 - **IDE:** Visual Studio Code
+
+
+## Installation
+
+### Prerequisites
+- Flutter SDK [Installation Guide](https://flutter.dev/docs/get-started/install)
+- Visual Studio Code [Download Link](https://code.visualstudio.com/Download)
+
+### Steps
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/Fnboy100/waste-to-wealth.git
 
 
 
