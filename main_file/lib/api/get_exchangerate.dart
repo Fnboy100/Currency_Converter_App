@@ -4,6 +4,8 @@ import 'package:http/http.dart'
 import 'package:logger/logger.dart';
 
 class GetExchangeRateData {
+  String
+      apiKey;
   final Logger
       logger =
       Logger(
@@ -11,12 +13,14 @@ class GetExchangeRateData {
         PrettyPrinter(), // Log with colors and timestamp
   );
 
+  GetExchangeRateData(this.apiKey);
+
   Future<double>
       fetchExchangeRate() async {
     dynamic
         exchangeRate;
     try {
-      final response = await http.get(Uri.parse('https://v6.exchangerate-api.com/v6/60a164d0fcf7dd8e0e6bfafb//pair/USD/NGN'));
+      final response = await http.get(Uri.parse(apiKey));
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
         logger.i(data);
@@ -31,6 +35,7 @@ class GetExchangeRateData {
       ]);
     }
 
-    return exchangeRate ?? 0.0;
+    return exchangeRate ??
+        0.0;
   }
 }

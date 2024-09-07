@@ -44,11 +44,46 @@ android {
         versionName = flutterVersionName
     }
 
-    buildTypes {
+    productFlavors {
+    dev {
+        dimension "environment"
+        applicationIdSuffix ".dev"
+        versionNameSuffix "-dev"
+        resValue "string", "app_name", "MyApp (Dev)"
+    }
+    staging {
+        dimension "environment"
+        applicationIdSuffix ".staging"
+        versionNameSuffix "-staging"
+        resValue "string", "app_name", "MyApp (Staging)"
+    }
+    prod {
+        dimension "environment"
+        resValue "string", "app_name", "Naira_to_USD_Converter"
+    }
+}
+
+    //signingConfigs {
+    //release {
+        //keyAlias 'your-key-alias'
+        //keyPassword 'your-key-password'
+        //storeFile file('path/to/your/keystore')
+        //storePassword 'your-store-password'
+    //}
+
+
+  buildTypes {
         release {
             // TODO: Add your own signing config for the release build.
             // Signing with the debug keys for now, so `flutter run --release` works.
-            signingConfig = signingConfigs.debug
+             signingConfig = signingConfigs.debug
+            //signingConfig = signingConfigs.release
+
+            // Enable ProGuard or R8 for release builds
+            minifyEnabled true
+            
+            // Specify ProGuard rules file
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
 }

@@ -54,8 +54,8 @@ class _MovingTextState
           );
         },
         child: Text(
-           "Real Time Currency Converter",
-          style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
+           "Real-time exchange rate of Naira to Dollar",
+          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
         ),
       ),
     );

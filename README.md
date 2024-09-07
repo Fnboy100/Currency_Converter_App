@@ -1,6 +1,6 @@
-# Waste-to-Wealth Mobile Platform
+# Currency Converter Mobile Platform
 
-A mobile platform that connects users with recycling centers to promote sustainable waste management. Users can schedule waste collections, earn rewards for recycling, and access educational content on proper waste disposal.
+A mobile platform that converts the input amount from Naira to USD using the real-time exchange rate of Naira to Dollar.
 
 ## Table of Contents
 
@@ -14,14 +14,13 @@ A mobile platform that connects users with recycling centers to promote sustaina
 
 ## Introduction
 
-The Waste-to-Wealth platform is designed to tackle the waste management crisis by encouraging recycling through an incentivized system. The app connects users with local recycling centers, allowing them to schedule pickups for their recyclable waste, earn rewards, and learn more about the impact of proper waste disposal.
+The Currency Converter is a simple mobile application that converts any amount from Naira to USD by utilizing the real-time exchange rate from the capital market.
 
 
 ## Tech Stack
 
 - **Frontend:** Flutter, Dart
-- **Backend:** Firebase (Firestore, Authentication)
-- **APIs:** Google Maps API (for geolocation)
+- **APIs:** Exchangerate-api (for currency conversion)
 - **IDE:** Visual Studio Code
 
 
@@ -34,7 +33,7 @@ The Waste-to-Wealth platform is designed to tackle the waste management crisis b
 ### Steps
 1. Clone the repository:
    ```bash
-   git clone https://github.com/Fnboy100/waste-to-wealth.git
+   git clone https://github.com/Fnboy100/Currency_Converter_App.git
 
 
 

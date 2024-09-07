@@ -3,22 +3,26 @@ import 'package:flutter/material.dart';
 import 'package:main_file/api/get_exchangerate.dart';
 import 'package:main_file/MaterialPage/UtilityMaterialPage/moving_text.dart';
 
-class CurrencyConverterMaterialPagee
+class CurrencyConverterMaterialPage
     extends StatefulWidget {
-  const CurrencyConverterMaterialPagee(
-      {super.key});
+  final String
+      apikey;
+  const CurrencyConverterMaterialPage(
+      {super.key,
+      required this.apikey});
   @override
-  State<StatefulWidget>
-      createState() {
-    return _CurrencyConverterMaterialPage();
-  }
+  CurrencyConverterMaterialPageState
+      createState() =>
+    CurrencyConverterMaterialPageState();
+  
 }
 
-class _CurrencyConverterMaterialPage
-    extends State {
-  final GetExchangeRateData
-      getExchangeRateData =
-      GetExchangeRateData();
+class CurrencyConverterMaterialPageState
+    extends State<CurrencyConverterMaterialPage> {
+
+  late GetExchangeRateData
+      getExchangeRateData;
+
   double
       exchangeRate =
       0.0;
@@ -33,6 +37,12 @@ class _CurrencyConverterMaterialPage
 
   Timer?
       resetTimer;
+
+      @override
+  void initState() {
+    super.initState();
+    getExchangeRateData = GetExchangeRateData(widget.apikey);
+  }
 
   void
       _convertValue() async {
@@ -85,8 +95,8 @@ class _CurrencyConverterMaterialPage
     return Scaffold(
       backgroundColor: Colors.blueGrey,
       appBar: AppBar(
-        backgroundColor: Colors.blueGrey,
-        elevation: 0,
+        backgroundColor: Colors.white38,
+        elevation: 10,
         title: MovingText(),
         centerTitle: true,
       ),
@@ -122,7 +132,7 @@ class _CurrencyConverterMaterialPage
                     color: Colors.black,
                   ),
                   prefixIcon: const Icon(
-                    IconData(0x20A6),
+                    IconData(0x20A6, fontFamily: "RalewayVariable"),
                     size: 20,
                   ),
                   prefixIconColor: Colors.black,
