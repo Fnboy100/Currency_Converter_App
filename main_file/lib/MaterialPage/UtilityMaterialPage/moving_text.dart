@@ -55,7 +55,7 @@ class _MovingTextState
         },
         child: Text(
            "Real-time exchange rate of Naira to Dollar",
-          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+          style: TextStyle(fontSize: 17.0, fontWeight: FontWeight.bold),
         ),
       ),
     );

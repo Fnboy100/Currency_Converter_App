@@ -33,6 +33,8 @@ dependencies:
   http: ^1.2.2
   logger: ^1.1.0
   flutter_secure_storage: ^9.0.0
+  intl: ^0.17.0
+  flutter_launcher_icons: "^0.9.2"
 
 
   # The following adds the Cupertino Icons font to your application.
@@ -42,6 +44,12 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
+
+
+flutter_icons:
+  android: true
+  #ios: false 
+  image_path: "asset/app_store.png"
   
 
   # The "flutter_lints" package below contains a set of recommended lints to
@@ -66,6 +74,9 @@ flutter:
   # assets:
   #   - images/a_dot_burr.jpeg
   #   - images/a_dot_ham.jpeg
+  #flutter:
+  assets:
+    - asset/app_store.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
@@ -91,11 +102,27 @@ flutter:
   #         weight: 700
   #
   fonts:
-     - family: RalewayVariable
+     - family: Raleway
        fonts:
-         - asset: asset/fonts/Raleway-variableFont_wght.ttf
+         - asset: asset/fonts/Raleway-Regular.ttf
+           weight: 400
+         - asset: asset/fonts/Raleway-Bold.ttf
+           weight: 700
+         - asset: asset/fonts/Raleway-Medium.ttf
+           weight: 500
+         - asset: asset/fonts/Raleway-SemiBold.ttf
            weight: 600
-  #       - asset: fonts/Schyler-Italic.ttf
+
+     - family: Roboto
+       fonts:
+         - asset: asset/fonts/roboto/Roboto-Bold.ttf
+           weight: 700
+    
+     - family: RobotoRegular
+       fonts:
+         - asset: asset/fonts/roboto/Roboto-Regular.ttf
+           weight: 400
+      #   - asset: fonts/Schyler-Italic.ttf
   #         style: italic
 
   # For details regarding fonts from package dependencies,

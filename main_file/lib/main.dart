@@ -1,25 +1,35 @@
 import 'package:flutter/material.dart';
 import 'package:main_file/MaterialPage/currency_converter_material_page.dart';
+import 'package:main_file/api/storage/apikeys/api_config_key.dart';
 import 'package:main_file/api/storage/securestorageservice.dart';
 import 'package:main_file/config/appconfig.dart';
 
 void
     main() async {
+  WidgetsFlutterBinding
+      .ensureInitialized();
+
   const String
       flavor =
       String.fromEnvironment('FLAVOR', defaultValue: 'prod');
-      
-      final SecureStorageService
-      secureStorage =
-      SecureStorageService();
-  await secureStorage.storeApiKey();
+  try {
+    final SecureStorageService
+        secureStorage =
+        SecureStorageService();
+    await secureStorage.storeApiKey(ApiKeys.exchangeRateKey);
+     print('Stored API key...');
 
-  AppConfig
-      config =
-      await fetchAppConfig(flavor);
+    AppConfig
+        config =
+        await fetchAppConfig(flavor);
+        print('App config fetched: ${config.apiUrl}');
 
-  runApp(
-      MyApp(config: config));
+
+    runApp(MyApp(config: config));
+  } catch (e) {
+    print('Error during initialization: $e');
+    // Handle initialization error, maybe display an error page
+  }
 }
 
 // Type of state
@@ -49,6 +59,9 @@ class MyApp
         apikey: config.apiUrl,
       ),
       title: "Real-time exchange rate of Naira to Dollar",
+      theme: ThemeData(
+        fontFamily: "RobotoRegular",
+      ),
     );
   }
 }
