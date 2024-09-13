@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:main_file/MaterialPage/UtilityMaterialPage/change_notifier_provider.dart';
 import 'package:main_file/MaterialPage/currency_converter_material_page.dart';
 import 'package:main_file/api/storage/apikeys/api_config_key.dart';
 import 'package:main_file/api/storage/securestorageservice.dart';
 import 'package:main_file/config/appconfig.dart';
+import 'package:provider/provider.dart';
 
 void
     main() async {
@@ -17,15 +19,16 @@ void
         secureStorage =
         SecureStorageService();
     await secureStorage.storeApiKey(ApiKeys.exchangeRateKey);
-     print('Stored API key...');
+    print('Stored API key...');
 
     AppConfig
         config =
         await fetchAppConfig(flavor);
-        print('App config fetched: ${config.apiUrl}');
+    print('App config fetched: ${config.apiUrl}');
 
-
-    runApp(MyApp(config: config));
+    runApp(ChangeNotifierProvider(
+        create: (context) => CurrencyConverterChangeProvider(),
+        child: MyApp(config: config)));
   } catch (e) {
     print('Error during initialization: $e');
     // Handle initialization error, maybe display an error page

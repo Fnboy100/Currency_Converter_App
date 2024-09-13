@@ -2,8 +2,10 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:logger/logger.dart';
+import 'package:main_file/MaterialPage/UtilityMaterialPage/change_notifier_provider.dart';
 import 'package:main_file/api/get_exchangerate.dart';
 import 'package:main_file/MaterialPage/UtilityMaterialPage/moving_text.dart';
+import 'package:provider/provider.dart';
 
 class CurrencyConverterMaterialPage
     extends StatefulWidget {
@@ -21,17 +23,14 @@ class CurrencyConverterMaterialPageState
     extends State<CurrencyConverterMaterialPage> {
   late GetExchangeRateData
       getExchangeRateData;
-  late double
-      exchangeRate =
-      0.0;
+
   double
       result =
       0.0;
   final TextEditingController
       textEditingController =
       TextEditingController();
-  late String
-      updatedDateTime;
+
   Timer?
       resetTimer;
   Timer?
@@ -50,7 +49,9 @@ class CurrencyConverterMaterialPageState
   void
       initState() {
     super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
     _setDateTime();
+  });
     _startDateTimeUpdate();
   }
 
@@ -66,9 +67,7 @@ class CurrencyConverterMaterialPageState
         initialDateTime =
         formatter.format(now);
 
-    setState(() {
-      updatedDateTime = initialDateTime;
-    });
+    Provider.of<CurrencyConverterChangeProvider>(context, listen: false).updateDateTime(initialDateTime);
 
     _initializeTimer();
   }
@@ -104,7 +103,7 @@ class CurrencyConverterMaterialPageState
         Timer(timeUntilMidnight, () async {
       await _updateExchangeRate();
 
-      updateTimer = Timer.periodic(const Duration(hours: 24), (Timer timer) async {
+      updateTimer = Timer.periodic(const Duration(minutes: 24), (Timer timer) async {
         await _updateExchangeRate();
       });
     });
@@ -116,9 +115,9 @@ class CurrencyConverterMaterialPageState
       getExchangeRateData = GetExchangeRateData(widget.apikey);
       double updatedRate = await getExchangeRateData.fetchExchangeRate();
 
-      setState(() {
-        exchangeRate = updatedRate;
-      });
+      if (Provider.of<CurrencyConverterChangeProvider>(context, listen: false).exchangeRate != updatedRate) {
+        Provider.of<CurrencyConverterChangeProvider>(context, listen: false).updateExchangeRate(updatedRate);
+      }
     } catch (e) {
       logger.e("Error fetching exchange rate: $e");
     }
@@ -132,14 +131,14 @@ class CurrencyConverterMaterialPageState
     }
 
     setState(() {
-      if (textEditingController.text.isEmpty || exchangeRate == 0.0) {
+      if (textEditingController.text.isEmpty || Provider.of<CurrencyConverterChangeProvider>(context, listen: false).exchangeRate == 0.0) {
         result = 0.0;
         return;
       }
 
       try {
         double input = double.parse(textEditingController.text);
-        result = input / exchangeRate;
+        result = input / Provider.of<CurrencyConverterChangeProvider>(context, listen: false).exchangeRate;
       } catch (e) {
         result = 0.0;
       }
@@ -176,122 +175,130 @@ class CurrencyConverterMaterialPageState
         title: MovingText(),
         centerTitle: true,
       ),
-      body: SingleChildScrollView(
-        child: SizedBox(
-          height: MediaQuery.of(context).size.height,
-          child: Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const SizedBox(
-                  height: 10.0,
-                ),
-                Text(
-                  "Today's Date: $updatedDateTime",
-                  style: const TextStyle(color: Colors.white, fontSize: 20.0, fontWeight: FontWeight.w800),
-                ),
-                const SizedBox(
-                  height: 150.0,
-                ),
-                RichText(
-                  textAlign: TextAlign.center,
-                  text: TextSpan(
+      body: Provider.of<CurrencyConverterChangeProvider>(context).exchangeRate == 0
+          ? Center(child: const CircularProgressIndicator.adaptive())
+          : SingleChildScrollView(
+              child: SizedBox(
+                height: MediaQuery.of(context).size.height,
+                child: Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      const TextSpan(
-                        text: '1 \$ = ',
-                        style: TextStyle(color: Colors.white, fontSize: 20.0, fontWeight: FontWeight.w600),
+                      const SizedBox(
+                        height: 5.0,
                       ),
-                      TextSpan(
-                        text: exchangeRate.toStringAsFixed(2),
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 20.0,
-                          fontWeight: FontWeight.w400,
+                      Consumer<CurrencyConverterChangeProvider>(builder: (context, updatedDateTimeProvider, child) {
+                        return Text(
+                          "${updatedDateTimeProvider.updatedTime}",
+                          style: const TextStyle(color: Colors.white, fontSize: 20.0, fontWeight: FontWeight.w800),
+                        );
+                      }),
+                      const SizedBox(
+                        height: 150.0,
+                      ),
+                      Consumer<CurrencyConverterChangeProvider>(
+                        builder: (context, exchangeRateProvider, child) {
+                          return RichText(
+                            textAlign: TextAlign.center,
+                            text: TextSpan(
+                              children: [
+                                const TextSpan(
+                                  text: '1 \$ = ',
+                                  style: TextStyle(color: Colors.white, fontSize: 20.0, fontWeight: FontWeight.w600),
+                                ),
+                                TextSpan(
+                                  text: exchangeRateProvider.exchangeRate.toStringAsFixed(2),
+                                  style: const TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 20.0,
+                                    fontWeight: FontWeight.w400,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          );
+                        },
+                      ),
+                      const Center(
+                        child: Text(
+                          "Exchange rate are updated every 00.00 GMT",
+                          style: TextStyle(color: Colors.white, fontSize: 15.0, fontWeight: FontWeight.w500),
                         ),
+                      ),
+                      const SizedBox(
+                        height: 30.0,
+                      ),
+                      RichText(
+                        textAlign: TextAlign.center,
+                        text: TextSpan(
+                          children: [
+                            const TextSpan(
+                              text: '\$ ',
+                              style: TextStyle(color: Colors.white, fontSize: 40.0, fontWeight: FontWeight.w600),
+                            ),
+                            TextSpan(
+                              text: result.toStringAsFixed(2),
+                              style: const TextStyle(color: Colors.white, fontSize: 40.0, fontWeight: FontWeight.w600),
+                            ),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(
+                        height: 20.0,
+                      ),
+                      Container(
+                        padding: const EdgeInsets.only(left: 10.0, right: 10.0),
+                        child: TextField(
+                          controller: textEditingController,
+                          decoration: InputDecoration(
+                            hintText: "Please enter the amount in Naira",
+                            hintStyle: const TextStyle(color: Colors.black, fontWeight: FontWeight.w600),
+                            prefixIcon: const Icon(
+                              IconData(0x20A6, fontFamily: "Roboto"),
+                              size: 20,
+                            ),
+                            prefixIconColor: Colors.black,
+                            filled: true,
+                            fillColor: Colors.white,
+                            focusedBorder: border,
+                            enabledBorder: border,
+                          ),
+                          keyboardType: const TextInputType.numberWithOptions(
+                            decimal: true,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(
+                        height: 20,
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 10.0, right: 10.0),
+                        child: ElevatedButton(
+                            onPressed: () {
+                              _convertValue();
+                            },
+                            style: ElevatedButton.styleFrom(
+                              shape: ContinuousRectangleBorder(
+                                borderRadius: BorderRadius.circular(28.0),
+                              ),
+                              backgroundColor: Colors.black,
+                              foregroundColor: Colors.white,
+                              elevation: 15.0,
+                              minimumSize: const Size(double.infinity, 50),
+                            ),
+                            child: const Text(
+                              "Convert",
+                              style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
+                            )),
+                      ),
+                      const SizedBox(
+                        height: 250.0,
                       ),
                     ],
                   ),
                 ),
-                const Center(
-                  child: Text(
-                    "Exchange rate are updated every 00.00 GMT",
-                    style: TextStyle(color: Colors.white, fontSize: 15.0, fontWeight: FontWeight.w500),
-                  ),
-                ),
-                const SizedBox(
-                  height: 30.0,
-                ),
-                RichText(
-                  textAlign: TextAlign.center,
-                  text: TextSpan(
-                    children: [
-                      const TextSpan(
-                        text: '\$ ',
-                        style: TextStyle(color: Colors.white, fontSize: 40.0, fontWeight: FontWeight.w600),
-                      ),
-                      TextSpan(
-                        text: result.toStringAsFixed(2),
-                        style: const TextStyle(color: Colors.white, fontSize: 40.0, fontWeight: FontWeight.w600),
-                      ),
-                    ],
-                  ),
-                ),
-                const SizedBox(
-                  height: 20.0,
-                ),
-                Container(
-                  padding: const EdgeInsets.only(left: 10.0, right: 10.0),
-                  child: TextField(
-                    controller: textEditingController,
-                    decoration: InputDecoration(
-                      hintText: "Please enter the amount in Naira",
-                      hintStyle: const TextStyle(color: Colors.black, fontWeight: FontWeight.w600),
-                      prefixIcon: const Icon(
-                        IconData(0x20A6, fontFamily: "Roboto"),
-                        size: 20,
-                      ),
-                      prefixIconColor: Colors.black,
-                      filled: true,
-                      fillColor: Colors.white,
-                      focusedBorder: border,
-                      enabledBorder: border,
-                    ),
-                    keyboardType: const TextInputType.numberWithOptions(
-                      decimal: true,
-                    ),
-                  ),
-                ),
-                const SizedBox(
-                  height: 20,
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(left: 10.0, right: 10.0),
-                  child: ElevatedButton(
-                      onPressed: () {
-                        _convertValue();
-                      },
-                      style: ElevatedButton.styleFrom(
-                        shape: ContinuousRectangleBorder(
-                          borderRadius: BorderRadius.circular(28.0),
-                        ),
-                        backgroundColor: Colors.black,
-                        foregroundColor: Colors.white,
-                        elevation: 15.0,
-                        minimumSize: const Size(double.infinity, 50),
-                      ),
-                      child: const Text(
-                        "Convert",
-                        style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
-                      )),
-                ),
-                const SizedBox(
-                  height: 250.0,
-                ),
-              ],
+              ),
             ),
-          ),
-        ),
-      ),
     );
   }
 }
