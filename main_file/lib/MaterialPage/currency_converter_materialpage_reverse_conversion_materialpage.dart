@@ -100,7 +100,7 @@ class CurrencyConverterMaterialpageReverseConversionMaterialpagestate
                           style: TextStyle(color: Colors.white, fontSize: 20.0, fontWeight: FontWeight.w600),
                         ),
                         Icon(
-                          IconData(0x20A6, fontFamily: "Roboto"),
+                          const IconData(0x20A6, fontFamily: "Roboto"),
                           size: 18,
                           color: Colors.white,
                         ),
