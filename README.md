@@ -1,6 +1,6 @@
 # Currency Converter Mobile Platform
 
-A mobile platform that converts the input amount from Naira to USD using the real-time exchange rate of Naira to Dollar.
+A mobile platform that converts the input amount from Naira to USD and vice versa using the real-time exchange rate of Naira to Dollar.
 
 ## Table of Contents
 
@@ -14,7 +14,7 @@ A mobile platform that converts the input amount from Naira to USD using the rea
 
 ## Introduction
 
-The Currency Converter is a simple mobile application that converts any amount from Naira to USD by utilizing the real-time exchange rate from the capital market.
+The Currency Converter is a simple mobile application that converts any amount from Naira to USD and vice versa by utilizing the real-time exchange rate from the capital market.
 
 
 ## Tech Stack

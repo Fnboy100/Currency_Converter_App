@@ -62,8 +62,9 @@ class MyApp
         apikey: config.apiUrl,
       ),
       title: "Real-time exchange rate of Naira to Dollar",
-      theme: ThemeData(
-        fontFamily: "RobotoRegular",
+      theme: ThemeData.light(
+        //fontFamily: "RobotoRegular",
+        useMaterial3: true,
       ),
     );
   }
